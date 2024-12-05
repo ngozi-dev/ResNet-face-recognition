@@ -20,7 +20,7 @@ export default function SignInForm() {
   }
 
   return (
-    <Card>
+    <Card className='font-manrope'>
       <CardHeader>
         <CardTitle>Sign In</CardTitle>
       </CardHeader>

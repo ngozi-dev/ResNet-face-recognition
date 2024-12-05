@@ -4,10 +4,10 @@ import { NavLink } from 'react-router-dom'
 import { Home, Users, BookOpen, UserPlus, LogOut } from 'lucide-react'
 
 const navItems = [
-  { name: 'Dashboard', href: '/admin/dashboard', icon: Home },
-  { name: 'Departments', href: '/admin/departments', icon: BookOpen },
-  { name: 'Staff', href: '/admin/staff', icon: Users },
-  { name: 'Add Staff', href: '/admin/add-staff', icon: UserPlus },
+  { name: 'Dashboard', href: '/app', icon: Home },
+  { name: 'Departments', href: '/app/departments', icon: BookOpen },
+  { name: 'Staff', href: '/app/staff', icon: Users },
+  { name: 'Add Staff', href: '/app/add-staff', icon: UserPlus },
 ]
 
 export default function AdminSidebar() {
@@ -23,7 +23,7 @@ export default function AdminSidebar() {
             <li key={item.name}>
               <NavLink
                 to={item.href}
-                className={(isActive) =>`flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 ${
+                className={({isActive}) =>`flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 ${
                   isActive ? 'bg-gray-200' : ''
                 }`}
               >

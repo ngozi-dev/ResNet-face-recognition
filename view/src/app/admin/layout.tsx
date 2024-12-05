@@ -1,12 +1,12 @@
-import { ReactNode } from 'react'
+import { Outlet } from 'react-router-dom'
 import AdminSidebar from '@/components/admin-sidebar'
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
+export default function AdminLayout() {
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex font-manrope h-screen bg-gray-100">
       <AdminSidebar />
       <main className="flex-1 overflow-y-auto p-8">
-        {children}
+        <Outlet />
       </main>
     </div>
   )
