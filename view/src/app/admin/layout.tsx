@@ -5,6 +5,7 @@ import AdminSidebar from '@/components/admin-sidebar'
 import { Button } from '@/components/ui/button'
 import { Menu } from 'lucide-react'
 import { Outlet } from 'react-router-dom'
+import { NotificationProvider } from '@/contexts/NotificationContext'
 
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -29,7 +30,9 @@ export default function AdminLayout() {
           </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-8">
-          <Outlet />
+          <NotificationProvider>
+            <Outlet />
+          </NotificationProvider>
         </main>
       </div>
     </div>

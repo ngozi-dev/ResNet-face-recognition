@@ -9,17 +9,27 @@ import SignIn from './app/auth/login/page'
 import Home from './app/page'
 import AdminLayout from './app/admin/layout'
 import AdminDashboard from './app/admin/dashboard/page'
+import { NotificationProvider } from './contexts/NotificationContext'
+import StaffPage from './app/admin/staff/page'
+import DepartmentsPage from './app/admin/departments/page'
 
 
 const routes = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/'>
       <Route path="/" element={<Home />} />,
-      <Route path='auth/login' element={<SignIn />} />
-      <Route path="register" element={<StudentRegistration />} />
+      <Route path='auth/login' element={
+      <NotificationProvider>
+        <SignIn />
+      </NotificationProvider> } />
+      <Route path="register" element={
+        <NotificationProvider>
+          <StudentRegistration />
+        </NotificationProvider>} />
       <Route path='app' element={<AdminLayout />}>
         <Route index element={<AdminDashboard />} />
-        <Route path='staff' element={<div>Staff</div>} />
+        <Route path='staff' element={<StaffPage />} />
+        <Route path='department' element={<DepartmentsPage />} />
         <Route path='students' element={<div>Students</div>} />
       </Route>
       <Route path='*' element={<div>404</div>} />
