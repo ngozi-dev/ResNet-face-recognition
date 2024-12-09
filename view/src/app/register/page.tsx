@@ -6,9 +6,12 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Navigate } from 'react-router-dom'
 import unibuja from '@/assets/unibuja.jpeg'
+import { Link } from 'react-router-dom'
 import post from '@/utils/post'
+import { useNotification } from '@/contexts/NotificationContext'
 
 export default function StudentRegistration() {
+  const {showNotification} = useNotification();
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
@@ -17,25 +20,38 @@ export default function StudentRegistration() {
     student_id: '',
     faculty: '',
     level: 100,
-    academic_session: '',
+    programme: '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const response: any = await post(
-      `${import.meta.env.VITE_API_DEV_URL}/students`,
+      `${import.meta.env.VITE_API_URL}/signup`,
       formData);
-    if (response.ok) {
-      return <Navigate to="/success" />
-    } 
+    if (response.status === 201) {
+      showNotification({
+        message: 'Sign in successful',
+        variant: 'success',
+        duration: 5000,
+      })
+      return <Navigate to="/" />
+    } else {
+      showNotification({
+        message: `${response.error}`,
+        variant: 'error',
+        duration: 5000,
+      })
+    }
   }
 
   return (
     <div className="flex font-manrope items-center justify-center min-h-screen bg-gray-100">
       <Card className="w-full max-w-lg">
         <CardHeader>
-          <img src={unibuja} alt="Uniabuja Logo" className="w-20 h-20 mx-auto" />
-          <CardTitle className='text-center text-lg'>Student Registration</CardTitle>
+          <Link to='/'>
+            <img src={unibuja} alt="Uniabuja Logo" className="w-20 h-20 mx-auto" />
+            <CardTitle className='text-center text-lg'>Student Registration</CardTitle>
+          </Link>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="grid grid-cols-2 gap-2">
@@ -119,17 +135,20 @@ export default function StudentRegistration() {
             </div>
 
             <div>
-              <Label htmlFor="level">Academic Session</Label>
-              <Input
-                id="academic_session"
-                type="month"
-                min={'2024-12'}
-                max={'2025-12'}
-                value={formData.academic_session}
-                onChange={(e) => setFormData((prev) => ({...prev, academic_session: e.target.value}))}
-                required
-              />
+              <Label htmlFor="programme">Programme</Label>
+              <Select onValueChange={(value) => setFormData((prev) => ({...prev, programme: value }))} required>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select programme" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="formData.cs">B.sc - Degree</SelectItem>
+                  <SelectItem value="formData.eng">M.sc - Masters</SelectItem>
+                  <SelectItem value="formData.bio">Ph.D - Doctorate</SelectItem>
+                  {/* Add more departments as needed */}
+                </SelectContent>
+              </Select>
             </div>
+           
             
           </CardContent>
           <CardFooter className='flex items-center w-full flex-col'>

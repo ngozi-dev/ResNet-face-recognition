@@ -1,0 +1,6 @@
+Flask
+SQLAlchemy
+flask-jwt-extended
+flask_cors
+Flask-Mail
+gunicorn
