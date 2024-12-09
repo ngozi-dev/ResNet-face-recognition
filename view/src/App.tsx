@@ -12,6 +12,7 @@ import AdminDashboard from './app/admin/dashboard/page'
 import { NotificationProvider } from './contexts/NotificationContext'
 import StaffPage from './app/admin/staff/page'
 import DepartmentsPage from './app/admin/departments/page'
+import VerificationPage from './app/admin/verification/page'
 
 
 const routes = createBrowserRouter(
@@ -29,8 +30,9 @@ const routes = createBrowserRouter(
       <Route path='app' element={<AdminLayout />}>
         <Route index element={<AdminDashboard />} />
         <Route path='staff' element={<StaffPage />} />
-        <Route path='department' element={<DepartmentsPage />} />
+        <Route path='departments' element={<DepartmentsPage />} />
         <Route path='students' element={<div>Students</div>} />
+        <Route path='verification' element={<VerificationPage />} />
       </Route>
       <Route path='*' element={<div>404</div>} />
     </Route>

@@ -7,7 +7,7 @@ import FaceCapture from '@/components/face-capture'
 export default function VerificationPage() {
   const [verificationResult, setVerificationResult] = useState<{name: string, department: string} | null>(null)
 
-  const handleVerification = async (image: string) => {
+  const handleVerification = async () => {
     // In a real application, you would send the image to your backend for verification
     // For this example, we'll simulate a successful verification
     await new Promise(resolve => setTimeout(resolve, 2000)) // Simulate API call
