@@ -1,16 +1,19 @@
 'use client'
 
 import { useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import post from '@/utils/post'
 import { useNotification } from '@/contexts/NotificationContext'
+import { useUserStore } from '@/store'
 
 export default function SignInForm() {
   const { showNotification } = useNotification()
+  const { login } = useUserStore();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -20,13 +23,20 @@ export default function SignInForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const response: any = await post(`${import.meta.env.VITE_API_URL}/login`, formData);
-    if (response.status === 200) {
+    if (response.message) {
+      login({
+        id: response.data.id,
+        email: response.data.email,
+        fullname: response.data.fullname,
+        role: response.data.role,
+        department: response.data.department
+      });
       showNotification({
         message: 'Sign in successful',
         variant: 'success',
         duration: 5000,
       })
-      return <Navigate to="/app" />
+      navigate('/app');
     } else {
       showNotification({
         message: `${response.error}`,

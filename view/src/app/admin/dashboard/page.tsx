@@ -1,12 +1,23 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useEffect, useState } from 'react'
+import get from '@/utils/get'
 
+interface Stats {
+  students: number
+  departments: number
+  staffs: number
+}
 export default function AdminDashboard() {
   // In a real application, you would fetch this data from your backend
-  const stats = {
-    studentsRegistered: 1234,
-    departmentsRegistered: 15,
-    staffRegistered: 50,
-  }
+  const [stats, setStats] = useState<Stats>()
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      const res: any = await get(`${import.meta.env.VITE_API_URL}/stats`)
+      setStats(res.data)
+    }
+    fetchStats()
+  }, [])
 
   return (
     <div>
@@ -17,7 +28,7 @@ export default function AdminDashboard() {
             <CardTitle>Students Registered</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-4xl font-bold">{stats.studentsRegistered}</p>
+            <p className="text-4xl font-bold">{stats?.students}</p>
           </CardContent>
         </Card>
         <Card>
@@ -25,7 +36,7 @@ export default function AdminDashboard() {
             <CardTitle>Departments Registered</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-4xl font-bold">{stats.departmentsRegistered}</p>
+            <p className="text-4xl font-bold">{stats?.departments}</p>
           </CardContent>
         </Card>
         <Card>
@@ -33,7 +44,7 @@ export default function AdminDashboard() {
             <CardTitle>Staff Registered</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-4xl font-bold">{stats.staffRegistered}</p>
+            <p className="text-4xl font-bold">{stats?.staffs}</p>
           </CardContent>
         </Card>
       </div>

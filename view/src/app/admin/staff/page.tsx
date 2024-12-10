@@ -1,56 +1,174 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Pencil, Trash2 } from 'lucide-react'
+import { useNotification } from '@/contexts/NotificationContext'
+import post from '@/utils/post'
+import del from '@/utils/delete'
+import put from '@/utils/put'
+import get from '@/utils/get'
 
 interface Staff {
   id: number
-  name: string
+  fullname: string
   role: string
+  email: string
   department: string
 }
 
-export default function StaffPage() {
-  const [staff, setStaff] = useState<Staff[]>([
-    { id: 1, name: 'John Doe', role: 'Lecturer', department: 'Computer Science' },
-    { id: 2, name: 'Jane Smith', role: 'Professor', department: 'Engineering' },
-  ])
-  const [newStaff, setNewStaff] = useState({ name: '', role: '', department: '' })
-  const [editingId, setEditingId] = useState<number | null>(null)
 
-  const addStaff = () => {
-    if (newStaff.name && newStaff.role && newStaff.department) {
-      setStaff([...staff, { id: Date.now(), ...newStaff }])
-      setNewStaff({ name: '', role: '', department: '' })
+type EditingState = {
+  id: number | null;
+  fields: Partial<Staff>;
+};
+
+
+export default function StaffPage() {
+  const [staff, setStaff] = useState<Staff[]>([])
+  const {showNotification} = useNotification();
+  const [newStaff, setNewStaff] = useState({ fullname: '', role: '', email: '', department: '' })
+  const [editingState, setEditingState] = useState<EditingState>({
+    id: null,
+    fields: {}
+  });
+  const [department, setDepartment] = useState<any[]>([])
+
+  const addStaff = async () => {
+    if (newStaff.fullname && newStaff.role && newStaff.department) {
+      const res: any = await post(`${import.meta.env.VITE_API_URL}/staff`, newStaff);
+      if (res.message) {
+        showNotification({
+          message: res.message || 'Staff Added Successfully',
+          variant: 'success',
+          duration: 5000,
+        })
+
+      } else {
+        showNotification({
+          message: `${res.error}`,
+          variant: 'error',
+          duration: 5000,
+        })
+      }  
+      setStaff([...staff, {...res.data }])
+      setNewStaff({ fullname: '', role: '', email: '', department: '' })
     }
   }
 
-  const startEditing = (id: number) => {
-    setEditingId(id)
+  const startEditing = (staffMember: Staff) => {
+    setEditingState({
+      id: staffMember.id,
+      fields: { ...staffMember }
+    });
+  };
+
+  // Handle input changes during editing
+  const handleEditChange = (field: keyof Staff, value: string) => {
+    setEditingState(prev => ({
+      ...prev,
+      fields: {
+        ...prev.fields,
+        [field]: value
+      }
+    }));
+  };
+
+  // Save staff changes
+  const saveStaff = async () => {
+    try {
+      if (!editingState.id) return;
+
+      // Prepare update payload
+      const updatePayload = { ...editingState.fields };
+
+      // API call to update staff
+      const res: any = await put(
+        `${import.meta.env.VITE_API_URL}/staff/${editingState.id}`, 
+        updatePayload
+      );
+
+      if (res.message) {
+        // Update local state
+        setStaff(prevStaff => 
+          prevStaff.map(s => 
+            s.id === editingState.id 
+              ? { ...s, ...updatePayload } 
+              : s
+          )
+        );
+
+        // Show success notification
+        showNotification({
+          message: 'Staff updated successfully',
+          variant: 'success',
+          duration: 3000
+        });
+
+        // Reset editing state
+        setEditingState({ id: null, fields: {} });
+      } else {
+        // Handle update failure
+        showNotification({
+          message: res.error || 'Failed to update staff',
+          variant: 'error',
+          duration: 3000
+        });
+      }
+    } catch (error) {
+      console.error('Error updating staff:', error);
+      showNotification({
+        message: 'An unexpected error occurred',
+        variant: 'error',
+        duration: 3000
+      });
+    }
+  };
+
+  // Cancel editing
+  const cancelEditing = () => {
+    setEditingState({ id: null, fields: {} });
+  };
+
+  const deleteStaff = async (id: number) => {
+    const res: any = await del(`${import.meta.env.VITE_API_URL}/staff/${id}`,);
+    if (res.message) {
+      showNotification({
+        message: res.message || 'Staff deleted successfully',
+        variant: 'success',
+        duration: 5000,
+      })
+      setStaff(staff.filter(s => s.id !== id))
+    } else {
+      showNotification({
+        message: `${res.error}`,
+        variant: 'error',
+        duration: 5000,
+      })
+    }
   }
 
-  const saveStaff = (id: number, updatedStaff: Partial<Staff>) => {
-    setStaff(staff.map(s => 
-      s.id === id ? { ...s, ...updatedStaff } : s
-    ))
-    setEditingId(null)
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+      const res: any = await get(`${import.meta.env.VITE_API_URL}/staff`);
+      setStaff(res.data)
+      const response: any = await get(`${import.meta.env.VITE_API_URL}/department`);
+      setDepartment(response.data);
+    }
+    fetchData()
+  }, [])
 
-  const deleteStaff = (id: number) => {
-    setStaff(staff.filter(s => s.id !== id))
-  }
 
   return (
     <div>
       <h1 className="text-3xl font-bold mb-6">Manage Staff</h1>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
         <Input
-          value={newStaff.name}
-          onChange={(e) => setNewStaff({...newStaff, name: e.target.value})}
+          value={newStaff.fullname}
+          onChange={(e) => setNewStaff({...newStaff, fullname: e.target.value})}
           placeholder="Name"
         />
         <Input
@@ -58,14 +176,17 @@ export default function StaffPage() {
           onChange={(e) => setNewStaff({...newStaff, role: e.target.value})}
           placeholder="Role"
         />
-        <Select onValueChange={(value) => setNewStaff({...newStaff, department: value})}>
+        <Input
+          value={newStaff.email}
+          onChange={(e) => setNewStaff({...newStaff, email: e.target.value})}
+          placeholder="Email"
+        />
+        <Select onValueChange={(value) => setNewStaff({...newStaff, email: '', department: value})}>
           <SelectTrigger>
             <SelectValue placeholder="Department" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Computer Science">Computer Science</SelectItem>
-            <SelectItem value="Engineering">Engineering</SelectItem>
-            <SelectItem value="Biology">Biology</SelectItem>
+            {department?.map((dept) => <SelectItem key={dept.id} value={dept.department}>{dept.department}</SelectItem>)}
           </SelectContent>
         </Select>
         <Button onClick={addStaff}>Add Staff</Button>
@@ -75,6 +196,7 @@ export default function StaffPage() {
           <TableRow>
             <TableHead>Name</TableHead>
             <TableHead>Role</TableHead>
+            <TableHead>Email</TableHead>
             <TableHead>Department</TableHead>
             <TableHead className="w-[100px]">Actions</TableHead>
           </TableRow>
@@ -83,41 +205,50 @@ export default function StaffPage() {
           {staff.map((s) => (
             <TableRow key={s.id}>
               <TableCell>
-                {editingId === s.id ? (
+              {editingState.id === s.id ? (
                   <Input
-                    value={s.name}
-                    onChange={(e) => saveStaff(s.id, { name: e.target.value })}
-                    onBlur={() => setEditingId(null)}
-                    autoFocus
+                    value={editingState.fields.fullname || s.fullname}
+                    onChange={(e) => handleEditChange('fullname', e.target.value)}
                   />
                 ) : (
-                  s.name
+                  s.fullname
                 )}
               </TableCell>
               <TableCell>
-                {editingId === s.id ? (
+              {editingState.id === s.id ? (
                   <Input
-                    value={s.role}
-                    onChange={(e) => saveStaff(s.id, { role: e.target.value })}
-                    onBlur={() => setEditingId(null)}
+                    value={editingState.fields.role || s.role}
+                    onChange={(e) => handleEditChange('role', e.target.value)}
                   />
                 ) : (
-                  s.role
+                  s.email
                 )}
               </TableCell>
               <TableCell>
-                {editingId === s.id ? (
-                  <Select 
-                    defaultValue={s.department}
-                    onValueChange={(value) => saveStaff(s.id, { department: value })}
+              {editingState.id === s.id ? (
+                  <Input
+                    value={editingState.fields.email || s.email}
+                    onChange={(e) => handleEditChange('email', e.target.value)}
+                  />
+                ) : (
+                  s.email
+                )}
+              </TableCell>
+              <TableCell>
+                {editingState.id === s.id ? (
+                  <Select
+                    value={editingState.fields.department || s.department}
+                    onValueChange={(value) => handleEditChange('department', value)}
                   >
                     <SelectTrigger>
-                      <SelectValue />
+                      <SelectValue placeholder="Select Department" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Computer Science">Computer Science</SelectItem>
-                      <SelectItem value="Engineering">Engineering</SelectItem>
-                      <SelectItem value="Biology">Biology</SelectItem>
+                      {department?.map(dept => (
+                        <SelectItem key={dept.id} value={dept.department}>
+                          {dept.department}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 ) : (
@@ -125,12 +256,37 @@ export default function StaffPage() {
                 )}
               </TableCell>
               <TableCell>
-                <Button variant="ghost" size="icon" onClick={() => startEditing(s.id)}>
-                  <Pencil className="h-4 w-4" />
-                </Button>
-                <Button variant="ghost" size="icon" onClick={() => deleteStaff(s.id)}>
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+              {editingState.id === s.id ? (
+                  <div className="flex space-x-2">
+                    <Button 
+                      variant="outline" 
+                      onClick={saveStaff}
+                    >
+                      Save
+                    </Button>
+                    <Button 
+                      variant="destructive" 
+                      onClick={cancelEditing}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex space-x-2">
+                    <Button 
+                      variant="ghost" 
+                      onClick={() => startEditing(s)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      onClick={() => deleteStaff(s.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
               </TableCell>
             </TableRow>
           ))}

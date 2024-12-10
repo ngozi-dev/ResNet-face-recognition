@@ -908,6 +908,10 @@ body {
   cursor: default;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .select-none {
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -954,6 +958,10 @@ body {
   gap: 2rem;
 }
 
+.gap-5 {
+  gap: 1.25rem;
+}
+
 .space-x-4 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-x-reverse: 0;
   margin-right: calc(1rem * var(--tw-space-x-reverse));
@@ -976,6 +984,12 @@ body {
   --tw-space-y-reverse: 0;
   margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+}
+
+.space-x-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(0.5rem * var(--tw-space-x-reverse));
+  margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
 }
 
 .overflow-auto {
@@ -1012,6 +1026,10 @@ body {
 
 .rounded-xl {
   border-radius: 0.75rem;
+}
+
+.rounded {
+  border-radius: 0.25rem;
 }
 
 .border {
@@ -1679,6 +1697,10 @@ body {
 
   .md\:grid-cols-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .md\:grid-cols-5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
   .md\:p-8 {

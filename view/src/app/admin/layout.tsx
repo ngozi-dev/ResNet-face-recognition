@@ -1,17 +1,17 @@
-'use client'
-
 import { useState } from 'react'
 import AdminSidebar from '@/components/admin-sidebar'
 import { Button } from '@/components/ui/button'
 import { Menu } from 'lucide-react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, Navigate } from 'react-router-dom'
 import { NotificationProvider } from '@/contexts/NotificationContext'
+import { useUserStore } from '@/store'
+
 
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const user = useUserStore((state) => state.user)
 
-  return (
-    <div className="flex h-screen bg-gray-100">
+  return !user || !user.email || user.email.trim() === '' ? (<Navigate to='/auth/login' replace />) : (<div className="flex h-screen bg-gray-100">
       <div className={`fixed inset-y-0 left-0 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition duration-200 ease-in-out z-30`}>
         <AdminSidebar />
       </div>
