@@ -15,7 +15,7 @@ app.config.from_object(Config)
 Config.init_app(app)
 mail = Mail()
 mail.init_app(app)
-CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
+CORS(app, resources={r"/*": {"origins": "*"}})
 app.register_blueprint(app_views)
 #jwt = JWTManager(app)
 

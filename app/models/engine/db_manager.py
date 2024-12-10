@@ -1,14 +1,15 @@
 #!/usr/bin/python3
 """ a module that stores in the database """
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session, Session
+from sqlalchemy.orm import sessionmaker, scoped_session
 from models.base_model import Base
 from models.student import Student
 from models.staff import Staff
+from models.department import Department
 from sys import modules
 
 
-classes = {'Student': Student, 'Staff': Staff}
+classes = {'Student': Student, 'Staff': Staff, 'Department': Department }
 
 
 class DBStorage:
@@ -88,4 +89,14 @@ class DBStorage:
     def get(self, cls, id):
         """Retrieve objects from storage"""
         objs = self.__session.query(cls).filter_by(id=id).first()
+        return objs
+    
+    def count(self, cls):
+        """Retrieve objects from storage"""
+        objs = self.__session.query(cls).count()
+        return objs
+    
+    def filter_by(self, cls, **kwargs):
+        """Retrieve objects from storage"""
+        objs = self.__session.query(cls).filter_by(**kwargs).first()
         return objs

@@ -958,8 +958,10 @@ body {
   gap: 2rem;
 }
 
-.gap-5 {
-  gap: 1.25rem;
+.space-x-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(0.5rem * var(--tw-space-x-reverse));
+  margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
 }
 
 .space-x-4 > :not([hidden]) ~ :not([hidden]) {
@@ -986,12 +988,6 @@ body {
   margin-bottom: calc(1rem * var(--tw-space-y-reverse));
 }
 
-.space-x-2 > :not([hidden]) ~ :not([hidden]) {
-  --tw-space-x-reverse: 0;
-  margin-right: calc(0.5rem * var(--tw-space-x-reverse));
-  margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
-}
-
 .overflow-auto {
   overflow: auto;
 }
@@ -1006,6 +1002,10 @@ body {
 
 .whitespace-nowrap {
   white-space: nowrap;
+}
+
+.rounded {
+  border-radius: 0.25rem;
 }
 
 .rounded-full {
@@ -1026,10 +1026,6 @@ body {
 
 .rounded-xl {
   border-radius: 0.75rem;
-}
-
-.rounded {
-  border-radius: 0.25rem;
 }
 
 .border {
@@ -1693,10 +1689,6 @@ body {
 
   .md\:grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .md\:grid-cols-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .md\:grid-cols-5 {
