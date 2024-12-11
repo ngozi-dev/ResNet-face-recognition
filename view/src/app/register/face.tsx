@@ -23,9 +23,8 @@ export default function FaceCapturing() {
         <CardHeader>
         <Link to='/'>
             <img src={unibuja} alt="Uniabuja Logo" className="w-20 h-20 mx-auto" />
-            <CardTitle className='text-center text-lg'>Student Registration</CardTitle>
+            <CardTitle className='text-center text-lg'>Student Face Capturing</CardTitle>
           </Link>
-          <CardTitle className="text-center">Face Capturing</CardTitle>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">

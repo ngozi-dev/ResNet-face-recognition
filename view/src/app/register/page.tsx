@@ -1,17 +1,20 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Navigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import unibuja from '@/assets/unibuja.jpeg'
 import { Link } from 'react-router-dom'
 import post from '@/utils/post'
 import { useNotification } from '@/contexts/NotificationContext'
+import get from '@/utils/get'
 
 export default function StudentRegistration() {
+  const navigate = useNavigate()
   const {showNotification} = useNotification();
+  const [department, setDepartment] = useState<any[]>([]);
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
@@ -21,20 +24,31 @@ export default function StudentRegistration() {
     faculty: '',
     level: 100,
     programme: '',
+    mode: ''
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res: any = await get(`${import.meta.env.VITE_API_URL}/department`);
+      setDepartment(res.data);
+    }
+
+    fetchData();
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const response: any = await post(
       `${import.meta.env.VITE_API_URL}/signup`,
       formData);
-    if (response.status === 201) {
+      console.log(formData);
+    if (response.message) {
       showNotification({
-        message: 'Sign in successful',
+        message: `${response.message}`,
         variant: 'success',
         duration: 5000,
       })
-      return <Navigate to="/" />
+      navigate("/facecapture")
     } else {
       showNotification({
         message: `${response.error}`,
@@ -43,6 +57,7 @@ export default function StudentRegistration() {
       })
     }
   }
+
 
   return (
     <div className="flex font-manrope items-center justify-center min-h-screen bg-gray-100">
@@ -93,16 +108,14 @@ export default function StudentRegistration() {
               />
             </div>
             <div>
-              <Label htmlFor="faculty">Faculty</Label>
-              <Select onValueChange={(value) => setFormData((prev) => ({...prev, faculty: value }))} required>
+              <Label htmlFor="programme">Mode</Label>
+              <Select onValueChange={(value) => setFormData((prev) => ({...prev, mode: value }))} required>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select Faculty" />
+                  <SelectValue placeholder="Select examination method" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="formData.cs">Computer Science</SelectItem>
-                  <SelectItem value="formData.eng">Engineering</SelectItem>
-                  <SelectItem value="formData.bio">Biology</SelectItem>
-                  {/* Add more departments as needed */}
+                  <SelectItem value="online">Online</SelectItem>
+                  <SelectItem value="offline">Offline</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -113,10 +126,7 @@ export default function StudentRegistration() {
                   <SelectValue placeholder="Select a department" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="formData.cs">Computer Science</SelectItem>
-                  <SelectItem value="formData.eng">Engineering</SelectItem>
-                  <SelectItem value="formData.bio">Biology</SelectItem>
-                  {/* Add more departments as needed */}
+                  {department.map(dept => <SelectItem key={dept.id} value={dept.department}>{dept.department}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -126,7 +136,7 @@ export default function StudentRegistration() {
                 id="level"
                 type="number"
                 min={100}
-                max={500}
+                max={900}
                 step={100}
                 value={formData.level}
                 onChange={(e) => setFormData((prev) => ({...prev, level: Number(e.target.value)}))}
@@ -141,10 +151,9 @@ export default function StudentRegistration() {
                   <SelectValue placeholder="Select programme" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="formData.cs">B.sc - Degree</SelectItem>
-                  <SelectItem value="formData.eng">M.sc - Masters</SelectItem>
-                  <SelectItem value="formData.bio">Ph.D - Doctorate</SelectItem>
-                  {/* Add more departments as needed */}
+                  <SelectItem value="Bsc">B.sc - Degree</SelectItem>
+                  <SelectItem value="Msc">M.sc - Masters</SelectItem>
+                  <SelectItem value="Phd">Ph.D - Doctorate</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -155,7 +164,6 @@ export default function StudentRegistration() {
             <Button type="submit" className="w-full">
               Register
             </Button>
-            <p className='text-slate-500 text-sm'>Already submitted form, verify registration <a href="" className='text-blue-500 underline'>here</a></p>
           </CardFooter>
         </form>
       </Card>

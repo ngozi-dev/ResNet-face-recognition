@@ -221,7 +221,7 @@ export default function StaffPage() {
                     onChange={(e) => handleEditChange('role', e.target.value)}
                   />
                 ) : (
-                  s.email
+                  s.role
                 )}
               </TableCell>
               <TableCell>
