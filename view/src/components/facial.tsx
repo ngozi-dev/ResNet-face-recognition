@@ -1,14 +1,17 @@
-import FaceCapture from '@/components/face-capture'
-import { useState } from 'react'
 import { Label } from './ui/label'
+import FaceCaptureRegistration from './face-capture'
 
 
 const Facial = () => {
-    const [_, setFaceImage] = useState<string | null>(null)
+    const handleRegistrationComplete = (imageData: string) => {
+        // Process captured image
+        console.log('Registration complete', imageData);
+      };
+    
     return (
         <div className="space-y-2">
             <Label>Face Capture</Label>
-            <FaceCapture onCapture={setFaceImage} />
+            <FaceCaptureRegistration onRegistrationComplete={handleRegistrationComplete} />
         </div>
     )
 }

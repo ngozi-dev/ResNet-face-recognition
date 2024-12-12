@@ -1,22 +1,10 @@
 'use client'
-
-import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import FaceCapture from '@/components/face-capture'
 import { Link } from 'react-router-dom'
 import unibuja from '@/assets/unibuja.jpeg'
+import FaceRegistration from '@/components/face-capture'
 
 export default function FaceCapturing() {
-  const [_, setFaceImage] = useState<string | null>(null)
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Here you would typically send the registration data to your backend
-    // For this example, we'll just show an alert and redirect
-    alert('Registration successful!')
-    window.location.href = '/app'
-  }
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <Card className="w-full max-w-md">
@@ -26,10 +14,10 @@ export default function FaceCapturing() {
             <CardTitle className='text-center text-lg'>Student Face Capturing</CardTitle>
           </Link>
         </CardHeader>
-        <form onSubmit={handleSubmit}>
+        <form>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <FaceCapture onCapture={setFaceImage} />
+              <FaceRegistration />
             </div>
           </CardContent>
         </form>
