@@ -5,6 +5,9 @@ import unibuja from '@/assets/unibuja.jpeg'
 import FaceRegistration from '@/components/face-capture'
 
 export default function FaceCapturing() {
+  const handleRegistrationComplete = (imageData: string) => {
+    console.log('Registration complete', imageData);
+  };
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <Card className="w-full max-w-md">
@@ -17,7 +20,7 @@ export default function FaceCapturing() {
         <form>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <FaceRegistration />
+              <FaceRegistration onRegistrationComplete={handleRegistrationComplete} />
             </div>
           </CardContent>
         </form>

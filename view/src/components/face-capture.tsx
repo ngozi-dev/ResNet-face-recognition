@@ -15,7 +15,6 @@ const FaceRegistration: React.FC<FaceRegistrationProps> = ({ onRegistrationCompl
   >('initial');
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -23,11 +22,11 @@ const FaceRegistration: React.FC<FaceRegistrationProps> = ({ onRegistrationCompl
 
   const createFaceLandmarker = useCallback(async () => {
     const filesetResolver = await FilesetResolver.forVisionTasks(
-      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm"
+      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
     );
     const landmarker = await FaceLandmarker.createFromOptions(filesetResolver, {
       baseOptions: {
-        modelAssetPath: `https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task`,
+        modelAssetPath: `/models/face_landmarker.task`,
         delegate: "GPU"
       },
       outputFaceBlendshapes: true,
@@ -39,16 +38,16 @@ const FaceRegistration: React.FC<FaceRegistrationProps> = ({ onRegistrationCompl
 
   useEffect(() => {
     createFaceLandmarker();
-    setLoading(true);
-    console.log('Face Landmarker created');
   }, [createFaceLandmarker]);
 
   const startWebcam = useCallback(async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      console.log(stream);
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         streamRef.current = stream;
+        console.log(streamRef.current);
         setWebcamRunning(true);
       }
     } catch (error) {
@@ -151,6 +150,7 @@ const FaceRegistration: React.FC<FaceRegistrationProps> = ({ onRegistrationCompl
 
   useEffect(() => {
     let animationFrameId: number;
+    console.log(webcamRunning, faceLandmarker);
     if (webcamRunning && faceLandmarker) {
       const runDetection = () => {
         processFrame();
@@ -219,7 +219,6 @@ const FaceRegistration: React.FC<FaceRegistrationProps> = ({ onRegistrationCompl
   return (
     <div className="p-4 max-w-md mx-auto">
       <h2 className="text-xl text-center font-bold mb-4">Face Registration</h2>
-      {loading ? 'Model Loading...' : null}
       {renderContent()}
     </div>
   );
