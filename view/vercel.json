@@ -7,6 +7,10 @@
       {
         "source": "/app/(.*)/(.*)",
         "destination": "/index.html"
+      },
+      {
+        "source": "/capturing/*",
+        "destination": "capturing/index.html"
       }
     ]
   }
