@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Link } from 'react-router-dom'
 import unibuja from '@/assets/unibuja.jpeg'
-import FaceLandmarkDetection from '@/components/face-capture'
+
 
 export default function FaceCapturing() {
   return (
@@ -17,7 +17,9 @@ export default function FaceCapturing() {
         <form>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <FaceLandmarkDetection />
+              <iframe src="" className='w-full h-full'>
+
+              </iframe>
             </div>
           </CardContent>
         </form>
