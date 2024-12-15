@@ -5,6 +5,7 @@ from models.image import Image
 from sqlalchemy import Column, String, Enum, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from hashlib import md5
+from uuid import uuid4
 
 
 
@@ -19,6 +20,7 @@ class Student(BaseModel, Base):
     level = Column(String(50), default=100, nullable=True)
     mode = Column(Enum('online', 'offline', name="mode"), nullable=False)
     department_id = Column(Integer, ForeignKey('departments.id'), nullable=True)
+    token = Column(String(128), nullable=True, default=str(uuid4()))
     department = relationship(
         'Department', 
         primaryjoin='Student.department_id == Department.id',

@@ -1,6 +1,6 @@
 'use client'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import FaceRegistration from '@/components/face-capture'
+import FaceLandmarkDetection from '@/components/face-capture'
 
 export default function VerificationPage() {
 
@@ -12,7 +12,7 @@ export default function VerificationPage() {
           <CardTitle>Face Verification</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <FaceRegistration />
+          <FaceLandmarkDetection />
         </CardContent>
       </Card>
     </div>

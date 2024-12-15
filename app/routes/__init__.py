@@ -10,3 +10,4 @@ from routes.auth import *
 from routes.department import *
 from routes.staff import *
 from routes.stats import *
+from routes.verification import *

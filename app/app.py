@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Main application file for the Flask app."""
 from flask import Flask, jsonify
-from flask_mail import Mail
 from flask_cors import CORS
 from models import storage
 from config.config import Config
@@ -13,11 +12,8 @@ app = Flask(__name__)
 config_name = "development"
 app.config.from_object(Config)
 Config.init_app(app)
-mail = Mail()
-mail.init_app(app)
 CORS(app, resources={r"/*": {"origins": "*"}})
 app.register_blueprint(app_views)
-#jwt = JWTManager(app)
 
 @app.teardown_appcontext
 def teardown_appcontext(self):

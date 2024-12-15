@@ -4,7 +4,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { useNavigate } from 'react-router-dom'
 import unibuja from '@/assets/unibuja.jpeg'
 import { Link } from 'react-router-dom'
 import post from '@/utils/post'
@@ -12,7 +11,6 @@ import { useNotification } from '@/contexts/NotificationContext'
 import get from '@/utils/get'
 
 export default function StudentRegistration() {
-  const navigate = useNavigate()
   const {showNotification} = useNotification();
   const [department, setDepartment] = useState<any[]>([]);
   const [formData, setFormData] = useState({
@@ -41,14 +39,14 @@ export default function StudentRegistration() {
     const response: any = await post(
       `${import.meta.env.VITE_API_URL}/signup`,
       formData);
-      console.log(formData);
     if (response.message) {
       showNotification({
         message: `${response.message}`,
         variant: 'success',
         duration: 5000,
       })
-      navigate("/facecapture")
+      console.log(response);
+      window.location.replace(`https://rashnotech.github.io/face_landmark_detector?face_token=${response.data.token}`)
     } else {
       showNotification({
         message: `${response.error}`,

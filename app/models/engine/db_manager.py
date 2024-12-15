@@ -6,10 +6,11 @@ from models.base_model import Base
 from models.student import Student
 from models.staff import Staff
 from models.department import Department
+from models.image import Image
 from sys import modules
 
 
-classes = {'Student': Student, 'Staff': Staff, 'Department': Department }
+classes = {'Student': Student, 'Staff': Staff, 'Department': Department, 'Image': Image }
 
 
 class DBStorage:

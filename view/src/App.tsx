@@ -12,7 +12,6 @@ import { NotificationProvider } from './contexts/NotificationContext'
 import StaffPage from './app/admin/staff/page'
 import DepartmentsPage from './app/admin/departments/page'
 import VerificationPage from './app/admin/verification/page'
-import FaceCapturing from './app/register/face'
 import './App.css'
 
 
@@ -28,11 +27,6 @@ const routes = createBrowserRouter(
         <NotificationProvider>
           <StudentRegistration />
         </NotificationProvider>} />
-      <Route path='facecapture' element={
-        <NotificationProvider>
-          <FaceCapturing />
-        </NotificationProvider>  
-        } />
       <Route path='app' element={<AdminLayout />}>
         <Route index element={<AdminDashboard />} />
         <Route path='staff' element={<StaffPage />} />
