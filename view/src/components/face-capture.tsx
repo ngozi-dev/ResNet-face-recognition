@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback } from "react";
 import { Camera, X, Download } from 'lucide-react';
 import { useNotification } from "@/contexts/NotificationContext";
+import post from "@/utils/post";
 
 const FaceLandmarkDetection: React.FC = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -82,22 +83,17 @@ const FaceLandmarkDetection: React.FC = () => {
 
         try {
             // Convert data URL to Blob
-            const response = await fetch(capturedImage);
-            const blob = await response.blob();
+            const res: any = await fetch(capturedImage);
+            const blob = await res.blob();
 
             // Create FormData
             const formData = new FormData();
             formData.append('file', blob, 'captured_face.jpg');
 
             // Upload to backend
-            const uploadResponse = await fetch('/api/v1/recognize', {
-                method: 'POST',
-                body: formData
-            });
+            const response: any = await post(`${import.meta.env.VITE_API_URL}/recognize`, formData);
 
-            const result = await uploadResponse.json();
-
-            if (uploadResponse.ok) {
+            if (response.ok) {
                 showNotification({
                     message: "Image uploaded successfully",
                     duration: 5000,
