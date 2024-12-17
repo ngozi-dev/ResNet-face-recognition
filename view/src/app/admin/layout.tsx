@@ -26,7 +26,7 @@ export default function AdminLayout() {
             >
               <Menu className="h-6 w-6" />
             </Button>
-            <h1 className="text-lg font-semibold text-gray-900">Admin Dashboard</h1>
+            <h1 className="text-lg font-semibold text-gray-900">Dashboard</h1>
           </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-8">

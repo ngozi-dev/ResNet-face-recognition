@@ -32,7 +32,11 @@ const routes = createBrowserRouter(
         <Route path='staff' element={<StaffPage />} />
         <Route path='departments' element={<DepartmentsPage />} />
         <Route path='students' element={<div>Students</div>} />
-        <Route path='verification' element={<VerificationPage />} />
+        <Route path='verification' element={
+             <NotificationProvider>
+              <VerificationPage />
+             </NotificationProvider>
+          } />
       </Route>
       <Route path='*' element={<div>404</div>} />
     </Route>

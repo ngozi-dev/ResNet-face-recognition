@@ -26,7 +26,7 @@ export default function AdminSidebar() {
   return (
     <div className="w-64 bg-white shadow-md h-full">
       <div className="p-4">
-        <h2 className="text-2xl font-bold">Admin Panel</h2>
+        <h2 className="text-2xl font-bold">Control Panel</h2>
       </div>
       <nav className="mt-8">
         <ul>
