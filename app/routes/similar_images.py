@@ -1,6 +1,7 @@
 import face_recognition
 import os
 
+
 def find_similar_faces(image_folder, target_image_path):
     """
     Find similar faces in a folder compared to a target image
