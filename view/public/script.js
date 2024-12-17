@@ -23,6 +23,7 @@ const STATES = {
     EYE_BLINK: 'eye_blink',
     HEAD_LEFT: 'head_left',
     HEAD_RIGHT: 'head_right',
+    EYE_CONTACT: 'eye_contact',
     COMPLETE: 'complete'
 };
 let currentState = STATES.MOUTH_OPEN;
@@ -150,14 +151,20 @@ async function predictWebcam() {
 
         if (currentState === STATES.HEAD_LEFT) {
             const eyeLookInLeft = blendshapes.categories.find(category => category.categoryName === 'eyeLookInLeft')?.score || 0;
-            const eyeLookDownLeft = blendshapes.categories.find(category => category.categoryName === 'eyeLookDownLeft')?.score || 0;
-            if (eyeLookInLeft > 0.6 && eyeLookDownLeft > 0.6) {
+            if (eyeLookInLeft > 0.6) {
                 currentState = STATES.HEAD_RIGHT;
                 currentAction.textContent = 'Now turn your head to the right';
             }
         }
 
         if (currentState === STATES.HEAD_RIGHT) {
+            const eyeLookInRight = blendshapes.categories.find(category => category.categoryName === 'eyeLookInRight')?.score || 0;
+            if (eyeLookInRight > 0.6) {
+                currentState = STATES.EYE_CONTACT;
+                currentAction.textContent = 'Now blink both eyes';
+            }
+        }
+        if (currentState === STATES.EYE_CONTACT) {
             const eyeLookInRight = blendshapes.categories.find(category => category.categoryName === 'eyeLookInRight')?.score || 0;
             const eyeLookDownRight = blendshapes.categories.find(category => category.categoryName === 'eyeLookDownRight')?.score || 0;
             if (eyeLookInRight > 0.6 && eyeLookDownRight > 0.6) {
@@ -240,29 +247,15 @@ proceedButton.addEventListener('click', () => {
         // Assume capturedPhotoImg is an HTMLImageElement or a source you can draw on a canvas
         const capturedPhotoImg = document.getElementById('capturedPhotoImg');
 
-        // Create a canvas element
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-
-        // Set the canvas size to the image size
-        canvas.width = capturedPhotoImg.width;
-        canvas.height = capturedPhotoImg.height;
-
-        // Draw the image onto the canvas
-        context.drawImage(capturedPhotoImg, 0, 0);
-
-        // Get the base64 string from the canvas
-        const base64Image = canvas.toDataURL('image/png');
-
         // Prepare the form data
         const formData = new FormData();
         const url = window.location.href;
         const token = url.split('=')[1];
-        formData.append('photo', base64Image);
+        formData.append('photo', capturedPhotoImg);
         formData.append('token', token);
 
         // Example fetch call (you'd replace with your actual backend endpoint)
-        fetch(`${import.meta.env.VITE_APP_URL}/image_capture`, {
+        fetch(`http://localhost:5000/api/v1/image_capture`, {
             method: 'POST',
             body: formData
         })
