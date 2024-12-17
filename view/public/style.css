@@ -1,0 +1,30 @@
+@use "@material";
+body {
+  font-family: helvetica, arial, sans-serif;
+  color: #3d3d3d;
+  --mdc-theme-primary: #007f8b;
+  --mdc-theme-on-primary: #f1f3f4;
+}
+
+video {
+  max-width: 100%;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+}
+
+.output_canvas {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+}
+
+.invisible {
+  opacity: 0.2;
+}
+
+#captured-photo {
+  max-width: 100%;
+  max-height: 480px;
+  object-fit: contain;
+}

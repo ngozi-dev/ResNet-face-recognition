@@ -46,7 +46,7 @@ export default function StudentRegistration() {
         duration: 5000,
       })
       console.log(response);
-      window.location.replace(`https://rashnotech.github.io/face_landmark_detector?face_token=${response.data.token}`)
+      window.location.href=`/?face_token=${response.data.token}`
     } else {
       showNotification({
         message: `${response.error}`,
