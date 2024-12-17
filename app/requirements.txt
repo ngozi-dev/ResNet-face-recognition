@@ -4,7 +4,5 @@ flask_cors
 Flask-Mail
 gunicorn
 mediapipe
-dlib
-cmake
 opencv-python
 face_recognition
