@@ -1,9 +1,7 @@
 Flask
 SQLAlchemy
-flask-jwt-extended
 flask_cors
 Flask-Mail
 gunicorn
-opencv-python-headless
-face_recognition
-numpy
+mediapipe
+deepface

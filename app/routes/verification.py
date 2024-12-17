@@ -6,8 +6,11 @@ from models.image import Image
 from models.student import Student
 from werkzeug.utils import secure_filename
 import os
-from models.face_recognition import FaceRecognitionSystem
+from routes.similar_images import find_similar_faces
 import cv2
+import mediapipe as mp
+# Ensure the correct module is imported or installed
+
 
 
 allowed_extension = {'jpg', 'jpeg', 'png'}
@@ -19,8 +22,35 @@ def allowed_file(filename):
     return False
 
 
-face_rec_system = FaceRecognitionSystem('known_faces_directory')
+@app_views.route('/recognize', methods=['POST'], strict_slashes=False)
+def recognize_faces():
+    # Handle image upload
+    photo = request.files['photo']
+    if photo:
+        filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], photo.filename)
+        photo.save(filepath)
+            
+        # Detect faces using MediaPipe
+        mp_face_detection = mp.solutions.face_detection
+        mp_drawing = mp.solutions.drawing_utils
+        face_detector = mp_face_detection.FaceDetection()
+            
+        image = cv2.imread(filepath)
+        results = face_detector.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+            
+        # Draw face detections
+        if results.detections:
+            for detection in results.detections:
+                mp_drawing.draw_detection(image, detection)
+            cv2.imwrite(filepath, image)
+            
+        # Find similar images in the central folder
+        similar_images = find_similar_faces(current_app.config['UPLOAD_FOLDER'], filepath)
+            
+    return jsonify({'similar_images': similar_images, 'filepath':filepath}), 200
 
+
+"""
 @app_views.route('/recognize', methods=['POST'], strict_slashes=False)
 def recognize_faces():
     if 'file' not in request.files:
@@ -49,7 +79,7 @@ def recognize_faces():
     
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
+"""
 
 
 @app_views.route('/image_capture', methods=['POST'], strict_slashes=False)

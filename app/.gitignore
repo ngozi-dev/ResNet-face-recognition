@@ -3,5 +3,6 @@ app/models/__pycache__
 app/__pycache__
 app/*.pyc
 app/*.pyo
-app/routes/*.pyc
+routes/__pycache__/*.pyc
+models/__pycache__/*.pyc
 exam_auth.db
